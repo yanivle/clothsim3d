@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <style>
+      #wrapper {
+        position: relative;
+      }
+
+      canvas {
+        position: absolute;
+        left: 0;
+      }
+
+      #insert_point {
+        position: absolute;
+        right: 0;
+      }
+
+      #reset {
+        position: absolute;
+        right: 0;
+      }
+
+      input {
+        margin: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Cloth Sim</h1>
+    <p>
+      <strong>Tear</strong>: mouse click<br/>
+      <strong>Shoot</strong>: space bar (aim with mouse!)<br/>
+    </p>
+    <div id="wrapper">
+      <canvas width=800 height=600 id="canvas"></canvas>
+      <script src="js/clothsim.js" type="module"></script>
+      <br/>
+      <button type="button" id="reset" onclick="initCloth()">Reset</button><br/>
+      <div id="insert_point">
+      </div>
+    </div>
+  <body>
+</html>
