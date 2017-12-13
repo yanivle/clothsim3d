@@ -28,7 +28,7 @@ export default class Spring {
         if (dist < this.resting_len) {
             return;
         }
-        if (dist > this.resting_len * UIValue('max_stretch', 10, 1, 10, 0.1)) {
+        if (dist > this.resting_len * UIValue('max_stretch', 10, 1, 100, 0.1)) {
             this.active = false;
             return;
         }

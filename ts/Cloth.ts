@@ -1,3 +1,4 @@
+import Sphere from './Sphere.js'
 import Particle from './Particle.js'
 import Spring from './Spring.js'
 import UIValue from './UIValue.js'
@@ -6,6 +7,8 @@ import FixedForce from './FixedForce.js'
 import Rect from './Rect.js'
 import Mouse from './Mouse.js'
 import AirResistance from './AirResistance.js'
+
+// const sphere = new Sphere(new Vec3(150, 150, 0), 10);
 
 export default class Cloth {
   springs: Spring[];
@@ -82,6 +85,7 @@ export default class Cloth {
   }
 
   draw(context:CanvasRenderingContext2D):void {
+    // sphere.draw(context);
     this.wind.draw(context, 'yellow', this.offset.add(new Vec3(500, 0)));
     this.gravity.draw(context, 'orange', this.offset.add(new Vec3(500, 0)));
 
@@ -120,6 +124,11 @@ export default class Cloth {
       this.springs.forEach(spring => {
         spring.satisfy();
       });
+      // this.joints.forEach(joint => {
+      //   if (!joint.lock) {
+      //     sphere.constrain(joint);
+      //   }
+      // });
     }
   }
 

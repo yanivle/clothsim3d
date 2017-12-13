@@ -3,6 +3,7 @@ import Spring from './Spring.js';
 import UIValue from './UIValue.js';
 import Vec3 from './Vec3.js';
 import FixedForce from './FixedForce.js';
+// const sphere = new Sphere(new Vec3(150, 150, 0), 10);
 export default class Cloth {
     constructor(name, offset, color, mouse, lock_side) {
         this.name = name;
@@ -61,6 +62,7 @@ export default class Cloth {
         // joints[GRID_WIDTH-1].lock = true;
     }
     draw(context) {
+        // sphere.draw(context);
         this.wind.draw(context, 'yellow', this.offset.add(new Vec3(500, 0)));
         this.gravity.draw(context, 'orange', this.offset.add(new Vec3(500, 0)));
         this.springs.forEach(spring => {
@@ -94,6 +96,11 @@ export default class Cloth {
             this.springs.forEach(spring => {
                 spring.satisfy();
             });
+            // this.joints.forEach(joint => {
+            //   if (!joint.lock) {
+            //     sphere.constrain(joint);
+            //   }
+            // });
         }
     }
     accumulate_forces(delta_time) {
