@@ -43,7 +43,7 @@ export default class Spring {
     c = 255 - c;
     let color = 'rgb(255,' + c + ',255)';
     context.strokeStyle = color;
-    // // context.strokeStyle = 'purple';
+    context.strokeStyle = 'purple';
     context.lineWidth = 1;
     context.stroke();
   }

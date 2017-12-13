@@ -8,11 +8,11 @@ class Getter {
   min: number;
   max: number;
   step: number;
-  // scaleFactor: number;
   slider: HTMLInputElement;
   detected_inconsistency: boolean;
 
-  constructor(name, initial_value, min, max, step=1) {
+  constructor(name:string, initial_value:number, min:number, max:number,
+              step:number=1) {
     this.name = name;
     this.initial_value = initial_value;
     this.min = min;
@@ -25,24 +25,24 @@ class Getter {
   createSlider():void {
     let slider = document.createElement('input');
     slider.id = slider.name = this.name;
-    slider.value = <string> <any> this.initial_value;
-    slider.min = <string> <any> this.min;
-    slider.max = <string> <any> this.max;
-    slider.step = <string> <any> this.step;
+    slider.value = <string> <any> (this.initial_value / this.step);
+    slider.min = <string> <any> (this.min / this.step);
+    slider.max = <string> <any> (this.max / this.step);
+    // slider.step = <string> <any> this.step;
     slider.type = "range";
-    let guid = generateGUID();
-    slider.setAttribute('list', guid);
-    let tickmarks = document.createElement('datalist');
-    tickmarks.id = guid;
-    let option_min = document.createElement('option');
-    option_min.value = slider.min;
-    option_min.label = slider.min;
-    tickmarks.appendChild(option_min);
-    let option_max = document.createElement('option');
-    option_max.value = slider.max;
-    option_max.label = slider.max;
-    tickmarks.appendChild(option_max);
-    document.getElementById('insert_point').appendChild(tickmarks);
+    // let guid = generateGUID();
+    // slider.setAttribute('list', guid);
+    // let tickmarks = document.createElement('datalist');
+    // tickmarks.id = guid;
+    // let option_min = document.createElement('option');
+    // option_min.value = slider.min;
+    // option_min.label = slider.min;
+    // tickmarks.appendChild(option_min);
+    // let option_max = document.createElement('option');
+    // option_max.value = slider.max;
+    // option_max.label = slider.max;
+    // tickmarks.appendChild(option_max);
+    // document.getElementById('insert_point').appendChild(tickmarks);
     this.slider = slider;
     let p = document.createElement('p');
     let text = document.createTextNode(this.name + ":");
@@ -65,7 +65,7 @@ class Getter {
   }
 
   get value():number {
-    return (<number> <any> this.slider.value);
+    return (<number> <any> this.slider.value) * this.step;
   }
 
   validate(name, initial_value, min, max, step):boolean {

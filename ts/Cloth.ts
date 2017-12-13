@@ -110,6 +110,7 @@ export default class Cloth {
       let dist = point.sub(joint.box.pos).len;
       if (dist <= influence) {
         joint.springs.forEach(spring => {
+          debugger;
           spring.active = false;
         });
       }
