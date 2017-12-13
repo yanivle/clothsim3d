@@ -9,6 +9,9 @@ export default class Cloth {
         this.offset = offset;
         this.color = color;
         this.mouse = mouse;
+        mouse.onmouseup_callsbacks.push(() => {
+            this.tear(mouse.pos, 10);
+        });
         this.elapsed_time = 0;
         this.init(lock_side);
     }
@@ -23,13 +26,16 @@ export default class Cloth {
         for (let y = 0; y < GRID_HEIGHT; y++) {
             for (let x = 0; x < GRID_WIDTH; x++) {
                 let joint = new Particle(new Vec2(this.offset.x + x * STRING_LEN, this.offset.y + y * STRING_LEN));
-                // if (y == 0 || x == 0 || y == GRID_HEIGHT - 1 || x == GRID_WIDTH - 1) {
-                // if (lock_side == 'x' && x == 0) {
-                // joint.lock = true;
-                // }
-                // if (lock_side == 'y' && y == 0) {
-                //   joint.lock = true;
-                // }
+                if (lock_side == 'y' && x == 0) {
+                    joint.lock = true;
+                    // joints[0].lock = true;
+                    // joints[GRID_WIDTH-1].lock = true;
+                }
+                if (lock_side == 'x' && y == 0) {
+                    joint.lock = true;
+                    // joints[0].lock = true;
+                    // joints[GRID_WIDTH * GRID_HEIGHT - GRID_WIDTH].lock = true;
+                }
                 let connect_to = [];
                 if (x > 0) {
                     connect_to.push(joints[x - 1 + y * GRID_WIDTH]);
@@ -50,15 +56,15 @@ export default class Cloth {
                 joints.push(joint);
             }
         }
-        joints[0].lock = true;
+        // joints[0].lock = true;
         // joints[GRID_WIDTH * GRID_HEIGHT - GRID_WIDTH].lock = true;
-        joints[GRID_WIDTH - 1].lock = true;
+        // joints[GRID_WIDTH-1].lock = true;
     }
     draw(context) {
         this.wind.draw(context, 'yellow', this.offset.add(new Vec2(500, 0)));
         this.gravity.draw(context, 'orange', this.offset.add(new Vec2(500, 0)));
         this.springs.forEach(spring => {
-            spring.draw(context);
+            spring.draw(context, this.color);
         });
         // this.joints.forEach(joint => {
         //   joint.draw(context, this.color);
@@ -68,10 +74,7 @@ export default class Cloth {
         this.joints.forEach(joint => {
             let dist = point.sub(joint.pos).len;
             if (dist <= influence) {
-                joint.prev_pos = joint.pos.add(dir.div(10));
-                // joint.prev_pos = joint.pos.copy();
-                joint.force.izero();
-                // joint.vel.izero();
+                joint.prev_pos = joint.pos.sub(dir);
             }
         });
     }
@@ -95,10 +98,7 @@ export default class Cloth {
     }
     accumulate_forces(delta_time) {
         this.elapsed_time += delta_time;
-        this.wind.dir.x = UIValue("wind_mag", 50, 0, 500, 1);
-        // this.wind.dir.x = (UIValue("wind_mag", 50, 0, 500, 1) *
-        //                    Math.sin(this.elapsed_time /
-        //                             UIValue("wind_freq", 25, 1, 100, 1)));
+        this.wind.dir.x = UIValue("wind_mag", 0, 0, 500, 1);
         this.gravity.dir.y = UIValue("gravity", 20, -40, 100, 1);
         this.joints.forEach(joint => {
             joint.force.izero();
@@ -108,6 +108,7 @@ export default class Cloth {
         });
     }
     simulate(delta_time) {
+        this.pull(this.mouse.pos, this.mouse.direction.div(100), 10);
         this.accumulate_forces(delta_time);
         this.satisfy_constraints();
     }

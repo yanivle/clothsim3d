@@ -5,47 +5,31 @@ import Mouse from './Mouse.js';
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 var mouse = new Mouse(canvas);
-// var mouse_force = new FixedForce(mouse.direction);
-// window.mouse = mouse;
-// var clothes : Cloth[] = [
-//   new Cloth('top', new Vec2(100, 100), 'red', mouse, 'x'),
-//   new Cloth('bottom', new Vec2(100, 400), 'blue', mouse, 'y')];
 var clothes = [
-    new Cloth('top', new Vec2(100, 100), 'red', mouse, 'y')
+    new Cloth('top', new Vec2(100, 100), 'darkred', mouse, 'x'),
+    new Cloth('bottom', new Vec2(100, 300), 'purple', mouse, 'y')
 ];
+// var clothes : Cloth[] = [
+//     new Cloth('top', new Vec2(100, 100), 'red', mouse, 'y')];
 function initKeyboard() {
     document.addEventListener('keydown', function (e) {
         if (e.code == 'Space') {
-            shoot();
+            // shoot();
             e.preventDefault();
         }
     });
 }
 function draw() {
-    // context.fillStyle = 'rgba(0,0,0,0.18)';
     context.fillStyle = 'rgba(0,0,0,1)';
     context.fillRect(0, 0, canvas.width, canvas.height);
-    // mouse_force.draw(context, 'red', mouse.pos);
     clothes.forEach(cloth => {
         cloth.draw(context);
     });
-    // projectiles.forEach(projectile => {
-    //   projectile.draw(context, 'yellow');
-    // });
 }
 function simulate(delta_time) {
-    // mouse_force.dir = mouse.direction.div(3);
     clothes.forEach(cloth => {
         cloth.simulate(delta_time);
     });
-    // projectiles.forEach(projectile => {
-    //   projectile.updatePosition(delta_time);
-    //   projectile.force = new Vec2(0, 0.1);
-    //   projectile.updateVelocities(delta_time);
-    //   clothes.forEach(cloth => {
-    //     cloth.tear(projectile.box.pos, 5);
-    //   });
-    // });
 }
 let updateCounter = 0;
 let updateInterval = 1 / 180;
@@ -64,22 +48,13 @@ function update(delta_time) {
         updateCounter -= updateInterval;
     }
 }
-// let projectiles:Particle[] = [];
-function createProjectile(pos, vel) {
-    // projectiles.push(new Particle(pos, 5, 5, vel));
-}
-function shoot() {
-    createProjectile(mouse.pos.copy(), mouse.direction.mul(5));
-}
 function initCloth() {
-    clothes[0].init('y');
-    // clothes[1].init('y');
+    clothes[0].init('x');
+    clothes[1].init('y');
 }
 function Main() {
     initKeyboard();
     initCloth();
-    // window.joints = joints;
-    // window.springs = springs;
     window.clothes = clothes;
     window.initCloth = initCloth;
     let lasttime;

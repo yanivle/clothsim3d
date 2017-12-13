@@ -58,22 +58,27 @@ class Getter {
             return;
         }
         if (this.name != name) {
+            this.detected_inconsistency = true;
             console.error('Inconsistent name', this.name, name);
             return false;
         }
         if (this.initial_value != initial_value) {
+            this.detected_inconsistency = true;
             console.error('Inconsistent initial_value', this.name, this.initial_value, initial_value);
             return false;
         }
         if (this.min != min) {
+            this.detected_inconsistency = true;
             console.error('Inconsistent min', this.name, this.min, min);
             return false;
         }
         if (this.max != max) {
+            this.detected_inconsistency = true;
             console.error('Inconsistent max', this.name, this.max, max);
             return false;
         }
         if (this.step != step) {
+            this.detected_inconsistency = true;
             console.error('Inconsistent step', this.name, this.step, step);
             return false;
         }
