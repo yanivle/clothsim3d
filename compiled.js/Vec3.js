@@ -1,24 +1,21 @@
-import Vec3 from './Vec3.js';
-export default class Vec2 {
-    toVec3() {
-        return new Vec3(this.x, this.y, 0);
-    }
-    constructor(x = 0, y = 0) {
+export default class Vec3 {
+    constructor(x = 0, y = 0, z = 0) {
         this.x = x;
         this.y = y;
+        this.z = z;
     }
     copy() {
-        return new Vec2(this.x, this.y);
+        return new Vec3(this.x, this.y, this.z);
     }
     izero() {
-        this.x = this.y = 0;
+        this.x = this.y = this.z = 0;
         return this;
     }
     get len() {
         return Math.sqrt(this.len2);
     }
     get len2() {
-        return this.x * this.x + this.y * this.y;
+        return this.x * this.x + this.y * this.y + this.z * this.z;
     }
     set len(new_len) {
         let frac = new_len / this.len;
@@ -27,10 +24,11 @@ export default class Vec2 {
     imul(a) {
         this.x *= a;
         this.y *= a;
+        this.z *= a;
         return this;
     }
     mul(a) {
-        return new Vec2(this.x * a, this.y * a);
+        return new Vec3(this.x * a, this.y * a, this.z * a);
     }
     idiv(a) {
         let b = 1 / a;
@@ -44,25 +42,28 @@ export default class Vec2 {
     iadd(other) {
         this.x += other.x;
         this.y += other.y;
+        this.z += other.z;
         return this;
     }
     add(other) {
-        return new Vec2(this.x + other.x, this.y + other.y);
+        return new Vec3(this.x + other.x, this.y + other.y, this.z + other.z);
     }
     isub(other) {
         this.x -= other.x;
         this.y -= other.y;
+        this.z -= other.z;
         return this;
     }
     sub(other) {
-        return new Vec2(this.x - other.x, this.y - other.y);
+        return new Vec3(this.x - other.x, this.y - other.y, this.z - other.z);
     }
     inegate() {
         this.x = -this.x;
         this.y = -this.y;
+        this.z = -this.z;
         return this;
     }
     negate() {
-        return new Vec2(-this.x, -this.y);
+        return new Vec3(-this.x, -this.y, -this.z);
     }
 }

@@ -1,7 +1,7 @@
 import Particle from './Particle.js'
 import Spring from './Spring.js'
 import UIValue from './UIValue.js'
-import Vec2 from './Vec2.js'
+import Vec3 from './Vec3.js'
 import FixedForce from './FixedForce.js'
 import Rect from './Rect.js'
 import Mouse from './Mouse.js'
@@ -11,20 +11,20 @@ export default class Cloth {
   springs: Spring[];
   joints: Particle[];
   name: string;
-  offset: Vec2;
+  offset: Vec3;
   color: string;
   wind: FixedForce;
   gravity: FixedForce;
   mouse: Mouse;
   elapsed_time: number;
 
-  constructor(name:string, offset:Vec2, color:string, mouse:Mouse, lock_side:string) {
+  constructor(name:string, offset:Vec3, color:string, mouse:Mouse, lock_side:string) {
     this.name = name;
     this.offset = offset;
     this.color = color;
     this.mouse = mouse;
     mouse.onmouseup_callsbacks.push(() => {
-      this.tear(mouse.pos, 10);
+      this.tear(mouse.pos.toVec3(), 10);
     });
     this.elapsed_time = 0;
     this.init(lock_side);
@@ -35,14 +35,14 @@ export default class Cloth {
     const GRID_HEIGHT = UIValue("GRID_HEIGHT", 15, 10, 50, 1);
     const STRING_LEN = UIValue("STRING_LEN", 10, 1, 50, 1);
 
-    this.wind = new FixedForce(new Vec2());
-    this.gravity = new FixedForce(new Vec2(0, UIValue("gravity", 20, -40, 100, 1)));
+    this.wind = new FixedForce(new Vec3());
+    this.gravity = new FixedForce(new Vec3(0, UIValue("gravity", 20, -40, 100, 1)));
 
     let springs = this.springs = [];
     let joints = this.joints = [];
     for (let y = 0; y < GRID_HEIGHT; y++) {
       for (let x = 0; x < GRID_WIDTH; x++) {
-        let joint = new Particle(new Vec2(this.offset.x + x * STRING_LEN,
+        let joint = new Particle(new Vec3(this.offset.x + x * STRING_LEN,
                                           this.offset.y + y * STRING_LEN));
         if (lock_side == 'y' && x == 0) {
           joint.lock = true;
@@ -82,8 +82,8 @@ export default class Cloth {
   }
 
   draw(context:CanvasRenderingContext2D):void {
-    this.wind.draw(context, 'yellow', this.offset.add(new Vec2(500, 0)));
-    this.gravity.draw(context, 'orange', this.offset.add(new Vec2(500, 0)));
+    this.wind.draw(context, 'yellow', this.offset.add(new Vec3(500, 0)));
+    this.gravity.draw(context, 'orange', this.offset.add(new Vec3(500, 0)));
 
     this.springs.forEach(spring => {
       spring.draw(context, this.color);
@@ -136,7 +136,7 @@ export default class Cloth {
   }
 
   simulate(delta_time):void {
-    this.pull(this.mouse.pos, this.mouse.direction.div(100), 10);
+    this.pull(this.mouse.pos.toVec3(), this.mouse.direction.div(100).toVec3(), 10);
     this.accumulate_forces(delta_time);
     this.satisfy_constraints();
   }

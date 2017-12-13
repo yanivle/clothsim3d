@@ -1,16 +1,16 @@
 import Rect from './Rect.js'
-import Vec2 from './Vec2.js'
+import Vec3 from './Vec3.js'
 import UIValue from './UIValue.js'
 import Spring from './Spring.js'
 
 export default class Particle {
-  pos: Vec2;
-  prev_pos: Vec2;
+  pos: Vec3;
+  prev_pos: Vec3;
   lock: boolean;
-  force: Vec2;
+  force: Vec3;
   springs: Spring[];
 
-  constructor(pos:Vec2, initial_vel:Vec2=null) {
+  constructor(pos:Vec3, initial_vel:Vec3=null) {
     this.pos = pos;
     if (initial_vel) {
       this.prev_pos = pos.sub(initial_vel);
@@ -18,11 +18,11 @@ export default class Particle {
       this.prev_pos = pos.copy();
     }
     this.lock = false;
-    this.force = new Vec2();
+    this.force = new Vec3();
     this.springs = [];
   }
 
-  get vel():Vec2 {
+  get vel():Vec3 {
     return this.pos.sub(this.prev_pos);
   }
 

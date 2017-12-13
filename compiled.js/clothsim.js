@@ -1,4 +1,4 @@
-import Vec2 from './Vec2.js';
+import Vec3 from './Vec3.js';
 import Cloth from './Cloth.js';
 import UIValue from './UIValue.js';
 import Mouse from './Mouse.js';
@@ -6,8 +6,8 @@ var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 var mouse = new Mouse(canvas);
 var clothes = [
-    new Cloth('top', new Vec2(100, 100), 'darkred', mouse, 'x'),
-    new Cloth('bottom', new Vec2(100, 300), 'purple', mouse, 'y')
+    new Cloth('top', new Vec3(100, 100, 0), 'darkred', mouse, 'x'),
+    new Cloth('bottom', new Vec3(100, 300, 0), 'purple', mouse, 'y')
 ];
 // var clothes : Cloth[] = [
 //     new Cloth('top', new Vec2(100, 100), 'red', mouse, 'y')];

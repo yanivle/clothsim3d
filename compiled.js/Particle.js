@@ -1,4 +1,4 @@
-import Vec2 from './Vec2.js';
+import Vec3 from './Vec3.js';
 export default class Particle {
     constructor(pos, initial_vel = null) {
         this.pos = pos;
@@ -9,7 +9,7 @@ export default class Particle {
             this.prev_pos = pos.copy();
         }
         this.lock = false;
-        this.force = new Vec2();
+        this.force = new Vec3();
         this.springs = [];
     }
     get vel() {
