@@ -1,5 +1,4 @@
 import Vec2 from './Vec2.js';
-import Entity from './Entity.js';
 import Cloth from './Cloth.js';
 import UIValue from './UIValue.js';
 import Mouse from './Mouse.js';
@@ -30,42 +29,44 @@ function draw() {
     clothes.forEach(cloth => {
         cloth.draw(context);
     });
-    projectiles.forEach(projectile => {
-        projectile.draw(context, 'yellow');
-    });
+    // projectiles.forEach(projectile => {
+    //   projectile.draw(context, 'yellow');
+    // });
 }
 function simulate(delta_time) {
     // mouse_force.dir = mouse.direction.div(3);
     clothes.forEach(cloth => {
         cloth.simulate(delta_time);
     });
-    projectiles.forEach(projectile => {
-        projectile.updatePosition(delta_time);
-        projectile.force = new Vec2(0, 0.1);
-        projectile.updateVelocities(delta_time);
-        clothes.forEach(cloth => {
-            cloth.tear(projectile.box.pos, 5);
-        });
-    });
+    // projectiles.forEach(projectile => {
+    //   projectile.updatePosition(delta_time);
+    //   projectile.force = new Vec2(0, 0.1);
+    //   projectile.updateVelocities(delta_time);
+    //   clothes.forEach(cloth => {
+    //     cloth.tear(projectile.box.pos, 5);
+    //   });
+    // });
 }
 let updateCounter = 0;
 let updateInterval = 1 / 180;
+const MAX_SIMULATIONS_PER_FRAME = 10;
 function update(delta_time) {
     let speed = UIValue('speed', 10, 1, 200, 1);
+    const MAX_COUNTER = updateInterval * MAX_SIMULATIONS_PER_FRAME * speed;
     delta_time *= speed;
     updateCounter += delta_time;
-    if (updateCounter > updateInterval * 10 * speed) {
+    if (updateCounter > MAX_COUNTER) {
         console.warn('Skipping frames!');
-        updateCounter = updateInterval * 10 * speed;
+        updateCounter = MAX_COUNTER;
     }
     while (updateCounter >= updateInterval) {
         simulate(updateInterval);
         updateCounter -= updateInterval;
     }
 }
-let projectiles = [];
+// let projectiles:Particle[] = [];
 function createProjectile(pos, vel) {
-    projectiles.push(new Entity(pos, 5, 5, vel));
+    // projectiles.push(new Particle(pos, 5, 5, vel));
 }
 function shoot() {
     createProjectile(mouse.pos.copy(), mouse.direction.mul(5));
@@ -79,6 +80,7 @@ function Main() {
     initCloth();
     // window.joints = joints;
     // window.springs = springs;
+    window.clothes = clothes;
     window.initCloth = initCloth;
     let lasttime;
     function callback(millis) {

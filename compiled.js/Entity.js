@@ -1,7 +1,7 @@
 import Rect from './Rect.js';
 import Vec2 from './Vec2.js';
 import UIValue from './UIValue.js';
-export default class Entity {
+export default class Particle {
     constructor(pos, width, height, vel) {
         this.vel = vel;
         this.box = new Rect(width, height);

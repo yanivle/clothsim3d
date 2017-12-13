@@ -1,9 +1,8 @@
-import Entity from './Entity.js';
+import Particle from './Particle.js';
 import Spring from './Spring.js';
 import UIValue from './UIValue.js';
 import Vec2 from './Vec2.js';
 import FixedForce from './FixedForce.js';
-import AirResistance from './AirResistance.js';
 export default class Cloth {
     constructor(name, offset, color, mouse, lock_side) {
         this.name = name;
@@ -25,7 +24,7 @@ export default class Cloth {
         let joints = this.joints = [];
         for (let y = 0; y < GRID_HEIGHT; y++) {
             for (let x = 0; x < GRID_WIDTH; x++) {
-                let joint = new Entity(new Vec2(this.offset.x + x * STRING_LEN, this.offset.y + y * STRING_LEN), 1, 1, new Vec2(0, 0));
+                let joint = new Particle(new Vec2(this.offset.x + x * STRING_LEN, this.offset.y + y * STRING_LEN));
                 // if (y == 0 || x == 0 || y == GRID_HEIGHT - 1 || x == GRID_WIDTH - 1) {
                 if (lock_side == 'x' && x == 0) {
                     joint.lock = true;
@@ -40,14 +39,14 @@ export default class Cloth {
                 if (y > 0) {
                     connect_to.push(joints[x + (y - 1) * GRID_WIDTH]);
                 }
-                if (x > 0 && y > 0) {
-                    connect_to.push(joints[x - 1 + (y - 1) * GRID_WIDTH]);
-                }
-                if (x < GRID_WIDTH - 1 && y > 0) {
-                    connect_to.push(joints[x + 1 + (y - 1) * GRID_WIDTH]);
-                }
+                // if (x > 0 && y > 0) {
+                //   connect_to.push(joints[x - 1 + (y - 1) * GRID_WIDTH]);
+                // }
+                // if (x < GRID_WIDTH - 1 && y > 0) {
+                //   connect_to.push(joints[x + 1 + (y - 1) * GRID_WIDTH]);
+                // }
                 connect_to.forEach(otherJoint => {
-                    let len = joint.box.pos.sub(otherJoint.box.pos).len;
+                    let len = joint.pos.sub(otherJoint.pos).len;
                     let spring = new Spring(joint, otherJoint, len * rest_len_frac, spring_k);
                     springs.push(spring);
                 });
@@ -70,52 +69,46 @@ export default class Cloth {
     }
     pull(point, dir, influence) {
         this.joints.forEach(joint => {
-            let dist = point.sub(joint.box.pos).len;
+            let dist = point.sub(joint.pos).len;
             if (dist <= influence) {
-                joint.prev_pos = joint.box.pos.add(dir.div(10));
-                // joint.prev_pos = joint.box.pos.copy();
+                joint.prev_pos = joint.pos.add(dir.div(10));
+                // joint.prev_pos = joint.pos.copy();
                 joint.force.izero();
-                joint.vel.izero();
+                // joint.vel.izero();
             }
         });
     }
     tear(point, influence) {
         this.joints.forEach(joint => {
-            let dist = point.sub(joint.box.pos).len;
+            let dist = point.sub(joint.pos).len;
             if (dist <= influence) {
                 joint.springs.forEach(spring => {
-                    debugger;
                     spring.active = false;
                 });
             }
         });
     }
+    satisfy_constraints() {
+        const constraint_iterations = UIValue("constraint_iterations", 3, 0, 3, 1);
+        for (let i = 0; i < constraint_iterations; i++) {
+            this.springs.forEach(spring => {
+                spring.satisfy();
+            });
+        }
+    }
     simulate(delta_time) {
-        const magic_constant = UIValue(this.name + "_magic", 0.99, 0, 1, 0.01);
-        // this.wind.dir.x = UIValue("wind", 10, 0, 50, 1);
         this.elapsed_time += delta_time;
         this.wind.dir.x = (UIValue("wind_mag", 20, 0, 50, 1) *
             Math.sin(this.elapsed_time /
                 UIValue("wind_freq", 30, 0, 600, 3)));
         this.gravity.dir.y = UIValue("gravity", 20, -40, 100, 1);
-        this.joints.forEach(joint => {
-            joint.updatePosition(delta_time, magic_constant);
-        });
+        // 1. Accumulate forces
         this.joints.forEach(joint => {
             joint.force.izero();
             this.gravity.apply(joint);
             this.wind.apply(joint);
+            joint.verlet(delta_time);
         });
-        if (this.mouse.down) {
-            this.tear(this.mouse.pos, 5);
-        }
-        this.springs.forEach(spring => {
-            spring.apply();
-        });
-        this.joints.forEach(joint => {
-            const air_resistance = new AirResistance(UIValue("air_resistance", 0, 0, 1, 0.0001));
-            air_resistance.apply(joint);
-            joint.updateVelocities(delta_time);
-        });
+        this.satisfy_constraints();
     }
 }

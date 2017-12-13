@@ -13,6 +13,7 @@ export default class Vec2 {
 
   izero() {
     this.x = this.y = 0;
+    return this;
   }
 
   get len() {
@@ -31,6 +32,7 @@ export default class Vec2 {
   imul(a) {
     this.x *= a;
     this.y *= a;
+    return this;
   }
 
   mul(a) {
@@ -40,6 +42,7 @@ export default class Vec2 {
   idiv(a) {
     let b = 1 / a;
     this.imul(b);
+    return this;
   }
 
   div(a) {
@@ -50,6 +53,7 @@ export default class Vec2 {
   iadd(other) {
     this.x += other.x;
     this.y += other.y;
+    return this;
   }
 
   add(other) {
@@ -59,6 +63,7 @@ export default class Vec2 {
   isub(other) {
     this.x -= other.x;
     this.y -= other.y;
+    return this;
   }
 
   sub(other) {
@@ -68,6 +73,7 @@ export default class Vec2 {
   inegate() {
     this.x = -this.x;
     this.y = -this.y;
+    return this;
   }
 
   negate() {

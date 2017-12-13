@@ -1,4 +1,4 @@
-import Entity from './Entity.js'
+import Particle from './Particle.js'
 import Vec2 from './Vec2.js'
 
 export default class AirResistance {
