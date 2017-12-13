@@ -1,11 +1,10 @@
 const MAX_MAG = 100;
 let delme = 0;
 export default class Spring {
-    constructor(entity1, entity2, resting_len, k) {
+    constructor(entity1, entity2) {
         this.entity1 = entity1;
         this.entity2 = entity2;
-        this.resting_len = resting_len;
-        this.k = k;
+        this.resting_len = entity2.pos.sub(entity1.pos).len;
         this.active = true;
         this.entity1.springs.push(this);
         this.entity2.springs.push(this);

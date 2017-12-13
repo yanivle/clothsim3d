@@ -16,8 +16,6 @@ export default class Cloth {
         const GRID_WIDTH = UIValue("GRID_WIDTH", 25, 10, 50, 1);
         const GRID_HEIGHT = UIValue("GRID_HEIGHT", 15, 10, 50, 1);
         const STRING_LEN = UIValue("STRING_LEN", 10, 1, 50, 1);
-        const rest_len_frac = UIValue("rest_len_frac", 1, 0, 3, 0.1);
-        const spring_k = UIValue("spring_k", 20, 1, 1000, 1);
         this.wind = new FixedForce(new Vec2());
         this.gravity = new FixedForce(new Vec2(0, UIValue("gravity", 20, -40, 100, 1)));
         let springs = this.springs = [];
@@ -26,12 +24,12 @@ export default class Cloth {
             for (let x = 0; x < GRID_WIDTH; x++) {
                 let joint = new Particle(new Vec2(this.offset.x + x * STRING_LEN, this.offset.y + y * STRING_LEN));
                 // if (y == 0 || x == 0 || y == GRID_HEIGHT - 1 || x == GRID_WIDTH - 1) {
-                if (lock_side == 'x' && x == 0) {
-                    joint.lock = true;
-                }
-                if (lock_side == 'y' && y == 0) {
-                    joint.lock = true;
-                }
+                // if (lock_side == 'x' && x == 0) {
+                // joint.lock = true;
+                // }
+                // if (lock_side == 'y' && y == 0) {
+                //   joint.lock = true;
+                // }
                 let connect_to = [];
                 if (x > 0) {
                     connect_to.push(joints[x - 1 + y * GRID_WIDTH]);
@@ -46,16 +44,15 @@ export default class Cloth {
                 //   connect_to.push(joints[x + 1 + (y - 1) * GRID_WIDTH]);
                 // }
                 connect_to.forEach(otherJoint => {
-                    let len = joint.pos.sub(otherJoint.pos).len;
-                    let spring = new Spring(joint, otherJoint, len * rest_len_frac, spring_k);
+                    let spring = new Spring(joint, otherJoint);
                     springs.push(spring);
                 });
                 joints.push(joint);
             }
         }
-        // joints[0].lock = true;
+        joints[0].lock = true;
         // joints[GRID_WIDTH * GRID_HEIGHT - GRID_WIDTH].lock = true;
-        // joints[GRID_WIDTH-1].lock = true;
+        joints[GRID_WIDTH - 1].lock = true;
     }
     draw(context) {
         this.wind.draw(context, 'yellow', this.offset.add(new Vec2(500, 0)));
@@ -89,26 +86,29 @@ export default class Cloth {
         });
     }
     satisfy_constraints() {
-        const constraint_iterations = UIValue("constraint_iterations", 3, 0, 3, 1);
+        const constraint_iterations = UIValue("constraint_iterations", 3, 1, 10, 1);
         for (let i = 0; i < constraint_iterations; i++) {
             this.springs.forEach(spring => {
                 spring.satisfy();
             });
         }
     }
-    simulate(delta_time) {
+    accumulate_forces(delta_time) {
         this.elapsed_time += delta_time;
-        this.wind.dir.x = (UIValue("wind_mag", 20, 0, 50, 1) *
-            Math.sin(this.elapsed_time /
-                UIValue("wind_freq", 30, 0, 600, 3)));
+        this.wind.dir.x = UIValue("wind_mag", 50, 0, 500, 1);
+        // this.wind.dir.x = (UIValue("wind_mag", 50, 0, 500, 1) *
+        //                    Math.sin(this.elapsed_time /
+        //                             UIValue("wind_freq", 25, 1, 100, 1)));
         this.gravity.dir.y = UIValue("gravity", 20, -40, 100, 1);
-        // 1. Accumulate forces
         this.joints.forEach(joint => {
             joint.force.izero();
             this.gravity.apply(joint);
             this.wind.apply(joint);
             joint.verlet(delta_time);
         });
+    }
+    simulate(delta_time) {
+        this.accumulate_forces(delta_time);
         this.satisfy_constraints();
     }
 }

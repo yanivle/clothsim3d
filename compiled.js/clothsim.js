@@ -51,7 +51,7 @@ let updateCounter = 0;
 let updateInterval = 1 / 180;
 const MAX_SIMULATIONS_PER_FRAME = 10;
 function update(delta_time) {
-    let speed = UIValue('speed', 10, 1, 200, 1);
+    const speed = UIValue('speed', 10, 1, 200, 1);
     const MAX_COUNTER = updateInterval * MAX_SIMULATIONS_PER_FRAME * speed;
     delta_time *= speed;
     updateCounter += delta_time;
