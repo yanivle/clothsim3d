@@ -15,7 +15,11 @@ export default class Spring {
         context.beginPath();
         context.moveTo(this.e1.pos.x, this.e1.pos.y);
         context.lineTo(this.e2.pos.x, this.e2.pos.y);
-        context.strokeStyle = color;
+        let c = Math.abs(this.e1.pos.z - this.e2.pos.z) * 100;
+        if (c > 255)
+            c = 255;
+        context.strokeStyle = 'rgb(255,255,' + c + ')';
+        // context.strokeStyle = color;
         context.lineWidth = 1;
         context.stroke();
     }

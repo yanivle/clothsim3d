@@ -1,9 +1,10 @@
+import Sphere from './Sphere.js';
 import Particle from './Particle.js';
 import Spring from './Spring.js';
 import UIValue from './UIValue.js';
 import Vec3 from './Vec3.js';
 import FixedForce from './FixedForce.js';
-// const sphere = new Sphere(new Vec3(150, 150, 0), 10);
+const sphere = new Sphere(new Vec3(0, 0, 1), 50);
 export default class Cloth {
     constructor(name, offset, color, mouse, lock_side) {
         this.name = name;
@@ -96,11 +97,11 @@ export default class Cloth {
             this.springs.forEach(spring => {
                 spring.satisfy();
             });
-            // this.joints.forEach(joint => {
-            //   if (!joint.lock) {
-            //     sphere.constrain(joint);
-            //   }
-            // });
+            this.joints.forEach(joint => {
+                if (!joint.lock) {
+                    sphere.constrain(joint);
+                }
+            });
         }
     }
     accumulate_forces(delta_time) {
@@ -115,7 +116,11 @@ export default class Cloth {
         });
     }
     simulate(delta_time) {
-        this.pull(this.mouse.pos.toVec3(), this.mouse.direction.div(100).toVec3(), 10);
+        // this.pull(this.mouse.pos.toVec3(), this.mouse.direction.div(100).toVec3(), 10);
+        sphere.center.x = this.mouse.pos.x;
+        sphere.center.y = this.mouse.pos.y;
+        sphere.center.z = UIValue("sphere_z", 1, 0, 50, 0.5);
+        sphere.radius = UIValue("sphere_radius", 50, 1, 500, 1);
         this.accumulate_forces(delta_time);
         this.satisfy_constraints();
     }

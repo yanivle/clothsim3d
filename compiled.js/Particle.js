@@ -15,6 +15,9 @@ export default class Particle {
     get vel() {
         return this.pos.sub(this.prev_pos);
     }
+    dampen(factor = 0.9) {
+        this.prev_pos.iadd(this.vel.mul(factor));
+    }
     verlet(delta_time) {
         // implement locking in constraint solving instead of here
         if (this.lock) {
@@ -23,6 +26,7 @@ export default class Particle {
         let t = this.pos.copy();
         let a = this.force.mul(delta_time * delta_time);
         let v = this.vel;
+        v.imul(0.999);
         this.pos.iadd(v.add(a));
         this.prev_pos = t;
     }
