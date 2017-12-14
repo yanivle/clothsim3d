@@ -6,8 +6,8 @@ var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 var mouse = new Mouse(canvas);
 var clothes = [
-    new Cloth('top', new Vec3(100, 100, 0), 'darkred', mouse, 'x')
-    // new Cloth('bottom', new Vec3(100, 300, 0), 'purple', mouse, 'y')
+    new Cloth('top', new Vec3(100, 100, 0), 'darkred', mouse, 'y')
+    // new Cloth('bottom', new Vec3(100, 300, 0), 'purple', mouse, 'x')
 ];
 // var clothes : Cloth[] = [
 //     new Cloth('top', new Vec2(100, 100), 'red', mouse, 'y')];
@@ -49,8 +49,8 @@ function update(delta_time) {
     }
 }
 function initCloth() {
-    clothes[0].init('x');
-    // clothes[1].init('y');
+    clothes[0].init('y');
+    // clothes[1].init('x');
 }
 function Main() {
     initKeyboard();

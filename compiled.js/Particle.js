@@ -1,4 +1,5 @@
 import Vec3 from './Vec3.js';
+import UIValue from './UIValue.js';
 export default class Particle {
     constructor(pos, initial_vel = null) {
         this.pos = pos;
@@ -26,7 +27,7 @@ export default class Particle {
         let t = this.pos.copy();
         let a = this.force.mul(delta_time * delta_time);
         let v = this.vel;
-        v.imul(0.999);
+        v.imul(UIValue('damp', 0.995, 0.990, 1, 0.001));
         this.pos.iadd(v.add(a));
         this.prev_pos = t;
     }

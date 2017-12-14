@@ -46,13 +46,12 @@ export default class Cloth {
     for (let y = 0; y < GRID_HEIGHT; y++) {
       for (let x = 0; x < GRID_WIDTH; x++) {
         let joint = new Particle(new Vec3(this.offset.x + x * STRING_LEN,
-                                          this.offset.y + y * STRING_LEN));
-        if (lock_side == 'y' && x == 0) {
+                                          this.offset.y,
+                                          y * STRING_LEN));
+        if (lock_side == 'x' && x == 0) {
           joint.lock = true;
-          // joints[0].lock = true;
-          // joints[GRID_WIDTH-1].lock = true;
         }
-        if (lock_side == 'x' && y == 0) {
+        if (lock_side == 'y' && y == 0) {
           joint.lock = true;
           // joints[0].lock = true;
           // joints[GRID_WIDTH * GRID_HEIGHT - GRID_WIDTH].lock = true;
@@ -77,6 +76,8 @@ export default class Cloth {
 
         joints.push(joint);
       }
+      // joints[0].lock = true;
+      // joints[GRID_WIDTH-1].lock = true;
     }
 
     // joints[0].lock = true;
