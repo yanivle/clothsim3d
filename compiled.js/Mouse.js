@@ -6,6 +6,7 @@ export default class Mouse {
         this.prev_pos = new Vec2();
         this.register_handlers();
         this.onmouseup_callsbacks = [];
+        this.onmousedown_callsbacks = [];
     }
     get direction() {
         return this.pos.sub(this.prev_pos);
@@ -19,6 +20,9 @@ export default class Mouse {
             mouse.pos.x = e.clientX - rect.left;
             mouse.pos.y = e.clientY - rect.top;
             mouse.down = true;
+            mouse.onmousedown_callsbacks.forEach(callback => {
+                callback();
+            });
             e.preventDefault();
         };
         this.canvas.onmouseup = function (e) {

@@ -20,22 +20,32 @@ export default class Cloth {
   gravity: FixedForce;
   mouse: Mouse;
   elapsed_time: number;
+  string_width: number;
+  // selected_joints: Particle[];
 
-  constructor(name:string, offset:Vec3, color:string, mouse:Mouse, lock_side:string) {
+  constructor(name:string, offset:Vec3, width:number, height:number, color:string, mouse:Mouse, lock_side:string, string_width:number=1) {
     this.name = name;
     this.offset = offset;
     this.color = color;
     this.mouse = mouse;
+    this.string_width = string_width;
+    // this.selected_joints = [];
     mouse.onmouseup_callsbacks.push(() => {
-      this.tear(mouse.pos.toVec3(), 10);
+      this.tear(mouse.pos, 10*10);
+      // this.selected_joints = [];
     });
+    // mouse.onmousedown_callsbacks.push(() => {
+    //   this.select(mouse.pos.toVec3(), 50);
+    // });
     this.elapsed_time = 0;
-    this.init(lock_side);
+    this.init(width, height, lock_side);
   }
 
-  init(lock_side):void {
-    const GRID_WIDTH = UIValue("GRID_WIDTH", 25, 10, 50, 1);
-    const GRID_HEIGHT = UIValue("GRID_HEIGHT", 15, 10, 50, 1);
+  init(width, height, lock_side):void {
+    // const GRID_WIDTH = UIValue("GRID_WIDTH", 25, 10, 50, 1);
+    const GRID_WIDTH = width;
+    // const GRID_HEIGHT = UIValue("GRID_HEIGHT", 15, 10, 50, 1);
+    const GRID_HEIGHT = height;
     const STRING_LEN = UIValue("STRING_LEN", 10, 1, 50, 1);
 
     this.wind = new FixedForce(new Vec3());
@@ -85,14 +95,31 @@ export default class Cloth {
     // joints[GRID_WIDTH-1].lock = true;
   }
 
+  findClosest(point:Vec3) {
+    let closest_dist2 = 1000000000;
+    let closest_joint = this.joints[0];
+    this.joints.forEach(joint => {
+      let len2 = joint.pos.sub(point).len2;
+      if (len2 < closest_dist2) {
+        closest_dist2 = len2;
+        closest_joint = joint;
+      }
+    });
+    return closest_joint;
+  }
+
   draw(context:CanvasRenderingContext2D):void {
     // sphere.draw(context);
-    this.wind.draw(context, 'yellow', this.offset.add(new Vec3(500, 0)));
-    this.gravity.draw(context, 'orange', this.offset.add(new Vec3(500, 0)));
+    // this.wind.draw(context, 'yellow', this.offset.add(new Vec3(500, 0)));
+    // this.gravity.draw(context, 'orange', this.offset.add(new Vec3(500, 0)));
 
     this.springs.forEach(spring => {
-      spring.draw(context, this.color);
+      spring.draw(context, this.color, this.string_width);
     });
+
+    // this.selected_joints.forEach(joint => {
+    //   joint.draw(context, "red");
+    // });
 
     // this.joints.forEach(joint => {
     //   joint.draw(context, this.color);
@@ -108,10 +135,10 @@ export default class Cloth {
     });
   }
 
-  tear(point, influence):void {
+  tear(point, influence2):void {
     this.joints.forEach(joint => {
-      let dist = point.sub(joint.pos).len;
-      if (dist <= influence) {
+      let dist2 = point.sub(joint.pos.toVec2()).len2;
+      if (dist2 <= influence2) {
         joint.springs.forEach(spring => {
           spring.active = false;
         });
@@ -119,12 +146,29 @@ export default class Cloth {
     });
   }
 
+  // select(point, influence2):void {
+  //   this.joints.forEach(joint => {
+  //     let dist2 = point.sub(joint.pos).len2;
+  //     if (dist2 <= influence2) {
+  //       this.selected_joints.push(joint);
+  //     }
+  //   });
+  // }
+  //
   satisfy_constraints() {
     const constraint_iterations = UIValue("constraint_iterations", 3, 1, 10, 1);
     for (let i = 0; i < constraint_iterations; i++) {
       this.springs.forEach(spring => {
         spring.satisfy();
       });
+      // this.joints.forEach(joint => {
+      //   if (!joint.lock) {
+      //     if (this.selected_joints.indexOf(joint) >= 0) {
+      //       joint.pos.x = this.mouse.pos.x;
+      //       joint.pos.y = this.mouse.pos.y;
+      //     }
+      //   }
+      // });
       this.joints.forEach(joint => {
         if (!joint.lock) {
           sphere.constrain(joint);
@@ -135,7 +179,7 @@ export default class Cloth {
 
   accumulate_forces(delta_time) {
     this.elapsed_time += delta_time;
-    this.wind.dir.x = UIValue("wind_mag", 0, 0, 500, 1);
+    this.wind.dir.x = Math.sin(this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 20, 0, 500, 1);
     this.gravity.dir.y = UIValue("gravity", 20, -40, 100, 1);
     this.joints.forEach(joint => {
       joint.force.izero();

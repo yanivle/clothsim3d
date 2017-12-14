@@ -1,3 +1,5 @@
+import Vec2 from './Vec2';
+
 export default class Vec3 {
   x: number;
   y: number;
@@ -7,6 +9,10 @@ export default class Vec3 {
     this.x = x;
     this.y = y;
     this.z = z;
+  }
+
+  toVec2() {
+    return <Vec2><any>this;
   }
 
   copy() {

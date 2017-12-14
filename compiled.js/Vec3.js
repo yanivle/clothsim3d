@@ -4,6 +4,9 @@ export default class Vec3 {
         this.y = y;
         this.z = z;
     }
+    toVec2() {
+        return this;
+    }
     copy() {
         return new Vec3(this.x, this.y, this.z);
     }

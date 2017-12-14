@@ -18,7 +18,7 @@ export default class Spring {
     this.e2.springs.push(this);
   }
 
-  draw(context, color:string='purple') {
+  draw(context, color:string='purple', width=1) {
     if (this.active === false) {
       return;
     }
@@ -26,11 +26,11 @@ export default class Spring {
     context.moveTo(this.e1.pos.x,this.e1.pos.y);
     context.lineTo(this.e2.pos.x,this.e2.pos.y);
 
-    let c = Math.abs(this.e1.pos.z - this.e2.pos.z) * 100;
-    if (c > 255) c = 255;
-    context.strokeStyle = 'rgb(255,255,' + c + ')';
-    // context.strokeStyle = color;
-    context.lineWidth = 1;
+    // let c = Math.abs(this.e1.pos.z - this.e2.pos.z) * 100;
+    // if (c > 255) c = 255;
+    // context.strokeStyle = 'rgb(255,255,' + c + ')';
+    context.strokeStyle = color;
+    context.lineWidth = width;
     context.stroke();
   }
 
