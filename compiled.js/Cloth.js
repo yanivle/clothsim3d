@@ -29,7 +29,7 @@ export default class Cloth {
         const GRID_WIDTH = width;
         // const GRID_HEIGHT = UIValue("GRID_HEIGHT", 15, 10, 50, 1);
         const GRID_HEIGHT = height;
-        const STRING_LEN = UIValue("STRING_LEN", 10, 1, 50, 1);
+        const STRING_LEN = UIValue("STRING_LEN", 25, 1, 50, 1);
         this.wind = new FixedForce(new Vec3());
         this.gravity = new FixedForce(new Vec3(0, UIValue("gravity", 20, -40, 100, 1)));
         let springs = this.springs = [];
@@ -52,12 +52,12 @@ export default class Cloth {
                 if (y > 0) {
                     connect_to.push(joints[x + (y - 1) * GRID_WIDTH]);
                 }
-                // if (x > 0 && y > 0) {
-                //   connect_to.push(joints[x - 1 + (y - 1) * GRID_WIDTH]);
-                // }
-                // if (x < GRID_WIDTH - 1 && y > 0) {
-                //   connect_to.push(joints[x + 1 + (y - 1) * GRID_WIDTH]);
-                // }
+                if (x > 0 && y > 0) {
+                    connect_to.push(joints[x - 1 + (y - 1) * GRID_WIDTH]);
+                }
+                if (x < GRID_WIDTH - 1 && y > 0) {
+                    connect_to.push(joints[x + 1 + (y - 1) * GRID_WIDTH]);
+                }
                 connect_to.forEach(otherJoint => {
                     let spring = new Spring(joint, otherJoint);
                     springs.push(spring);
@@ -147,7 +147,8 @@ export default class Cloth {
     }
     accumulate_forces(delta_time) {
         this.elapsed_time += delta_time;
-        this.wind.dir.x = Math.sin(this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 20, 0, 500, 1);
+        this.wind.dir.x = Math.sin(this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 40, 0, 500, 1);
+        this.wind.dir.z = Math.sin(2 * this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 40, 0, 500, 1) * 0.2;
         this.gravity.dir.y = UIValue("gravity", 20, -40, 100, 1);
         this.joints.forEach(joint => {
             joint.force.izero();

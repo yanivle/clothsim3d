@@ -1,8 +1,8 @@
 import Force from './Force.js'
-import Vec2 from './Vec2.js'
+import Vec3 from './Vec3.js'
 
 export default class FixedForce extends Force {
-  dir: Vec2;
+  dir: Vec3;
 
   constructor(dir) {
     super();

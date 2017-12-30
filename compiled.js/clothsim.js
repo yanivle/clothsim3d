@@ -8,12 +8,10 @@ var context = canvas.getContext('2d');
 var mouse = new Mouse(canvas);
 var clothes = [
     new Cloth('top', new Vec3(100, 100, 0), 25, 15, 'red', mouse, 'y'),
-    new Cloth('rope', new Vec3(500, 100, 0), 25, 1, 'green', mouse, 'y', 5)
-    // new Cloth('bottom', new Vec3(100, 300, 0), 'purple', mouse, 'x')
 ];
 function initCloth() {
     clothes[0].init(25, 15, 'y');
-    clothes[1].init(25, 1, 'x');
+    // clothes[1].init(25, 1, 'x');
 }
 function initKeyboard() {
     document.addEventListener('keydown', function (e) {

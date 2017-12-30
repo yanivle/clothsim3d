@@ -45,7 +45,7 @@ export default class Sphere {
     let collision_res = this.collideWithParticle(particle);
     if (collision_res.collided) {
       particle.pos = collision_res.collision_point;
-      particle.dampen();
+      particle.dampen(0.9999);
     }
   }
 
