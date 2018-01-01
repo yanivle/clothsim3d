@@ -1,5 +1,6 @@
 import Sphere from './Sphere.js';
 import Particle from './Particle.js';
+import Triangle from './Triangle.js';
 import Spring from './Spring.js';
 import UIValue from './UIValue.js';
 import Vec3 from './Vec3.js';
@@ -34,16 +35,23 @@ export default class Cloth {
         this.gravity = new FixedForce(new Vec3(0, UIValue("gravity", 20, -40, 100, 1)));
         let springs = this.springs = [];
         let joints = this.joints = [];
+        let triangles = this.triangles = [];
         for (let y = 0; y < GRID_HEIGHT; y++) {
             for (let x = 0; x < GRID_WIDTH; x++) {
-                let joint = new Particle(new Vec3(this.offset.x + x * STRING_LEN, this.offset.y, y * STRING_LEN));
-                if (lock_side == 'x' && x == 0) {
-                    joint.lock = true;
+                let joint;
+                if (lock_side == 'x') {
+                    joint = new Particle(new Vec3(this.offset.x + x * STRING_LEN, this.offset.y, y * STRING_LEN));
+                    if (x == 0) {
+                        joint.lock = true;
+                    }
                 }
-                if (lock_side == 'y' && y == 0) {
-                    joint.lock = true;
-                    // joints[0].lock = true;
-                    // joints[GRID_WIDTH * GRID_HEIGHT - GRID_WIDTH].lock = true;
+                else if (lock_side == 'y') {
+                    joint = new Particle(new Vec3(this.offset.x + x * STRING_LEN, this.offset.y + y * STRING_LEN, 0));
+                    if (y == 0) {
+                        joint.lock = true;
+                        // joints[0].lock = true;
+                        // joints[GRID_WIDTH * GRID_HEIGHT - GRID_WIDTH].lock = true;
+                    }
                 }
                 let connect_to = [];
                 if (x > 0) {
@@ -54,6 +62,10 @@ export default class Cloth {
                 }
                 if (x > 0 && y > 0) {
                     connect_to.push(joints[x - 1 + (y - 1) * GRID_WIDTH]);
+                    let t = new Triangle(joint, joints[x + (y - 1) * GRID_WIDTH], joints[x - 1 + (y - 1) * GRID_WIDTH]);
+                    let t2 = new Triangle(joint, joints[x - 1 + (y - 1) * GRID_WIDTH], joints[x - 1 + y * GRID_WIDTH]);
+                    triangles.push(t);
+                    triangles.push(t2);
                 }
                 if (x < GRID_WIDTH - 1 && y > 0) {
                     connect_to.push(joints[x + 1 + (y - 1) * GRID_WIDTH]);
@@ -87,9 +99,21 @@ export default class Cloth {
         // sphere.draw(context);
         // this.wind.draw(context, 'yellow', this.offset.add(new Vec3(500, 0)));
         // this.gravity.draw(context, 'orange', this.offset.add(new Vec3(500, 0)));
-        this.springs.forEach(spring => {
-            spring.draw(context, this.color, this.string_width);
+        this.triangles.sort((t1, t2) => {
+            let max_z1 = Math.max(t1.p1.pos.z, t1.p2.pos.z, t1.p3.pos.z);
+            let max_z2 = Math.max(t2.p1.pos.z, t2.p2.pos.z, t2.p3.pos.z);
+            if (max_z1 < max_z2)
+                return -1;
+            if (max_z1 > max_z2)
+                return 1;
+            return 0;
         });
+        this.triangles.forEach(triangle => {
+            triangle.draw(context);
+        });
+        // this.springs.forEach(spring => {
+        //   spring.draw(context, this.color, this.string_width);
+        // });
         // this.selected_joints.forEach(joint => {
         //   joint.draw(context, "red");
         // });
@@ -148,7 +172,7 @@ export default class Cloth {
     accumulate_forces(delta_time) {
         this.elapsed_time += delta_time;
         this.wind.dir.x = Math.sin(this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 40, 0, 500, 1);
-        this.wind.dir.z = Math.sin(2 * this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 40, 0, 500, 1) * 0.2;
+        this.wind.dir.z = Math.sin(2 * this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 40, 0, 500, 1) * 0.1;
         this.gravity.dir.y = UIValue("gravity", 20, -40, 100, 1);
         this.joints.forEach(joint => {
             joint.force.izero();
@@ -161,8 +185,10 @@ export default class Cloth {
         // this.pull(this.mouse.pos.toVec3(), this.mouse.direction.div(100).toVec3(), 10);
         sphere.center.x = this.mouse.pos.x;
         sphere.center.y = this.mouse.pos.y;
-        sphere.center.z = UIValue("sphere_z", 1, 0, 50, 0.5);
-        sphere.radius = UIValue("sphere_radius", 50, 1, 500, 1);
+        sphere.center.z = UIValue("sphere_z", 20, 0, 50, 0.5);
+        sphere.radius = UIValue("sphere_radius", 100, 1, 500, 1);
+        // light_source.x = this.mouse.pos.x;
+        // light_source.y = this.mouse.pos.y;
         this.accumulate_forces(delta_time);
         this.satisfy_constraints();
     }

@@ -34,7 +34,10 @@ export default class Sphere {
     let vec_from_center = particle.pos.sub(this.center);
     let dist2 = vec_from_center.len2;
     if (dist2 < this._radius2) {
-      let dist= vec_from_center.len;
+      if (vec_from_center.z > 0) {
+        vec_from_center.z = -vec_from_center.z;
+      }
+      let dist = vec_from_center.len;
       let collision_point = this.center.add(vec_from_center.mul(this.radius / dist));
       return new CollisionResult(true, collision_point);
     }

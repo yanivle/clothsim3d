@@ -69,4 +69,13 @@ export default class Vec3 {
     negate() {
         return new Vec3(-this.x, -this.y, -this.z);
     }
+    dot(other) {
+        return this.x * other.x + this.y * other.y + this.z * other.z;
+    }
+    cross(other) {
+        return new Vec3(this.y * other.z - this.z * other.y, this.z * other.x - this.x * other.z, this.x * other.y - this.y * other.x);
+    }
+    normalize() {
+        this.idiv(this.len);
+    }
 }
