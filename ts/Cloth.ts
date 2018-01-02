@@ -132,21 +132,21 @@ export default class Cloth {
     // this.wind.draw(context, 'yellow', this.offset.add(new Vec3(500, 0)));
     // this.gravity.draw(context, 'orange', this.offset.add(new Vec3(500, 0)));
 
-    this.triangles.sort((t1, t2) => {
-      let max_z1 = Math.max(t1.p1.pos.z, t1.p2.pos.z, t1.p3.pos.z);
-      let max_z2 = Math.max(t2.p1.pos.z, t2.p2.pos.z, t2.p3.pos.z);
-      if(max_z1 < max_z2) return -1;
-      if(max_z1 > max_z2) return 1;
-      return 0;
-    });
+    // this.triangles.sort((t1, t2) => {
+    //   let max_z1 = Math.max(t1.p1.pos.z, t1.p2.pos.z, t1.p3.pos.z);
+    //   let max_z2 = Math.max(t2.p1.pos.z, t2.p2.pos.z, t2.p3.pos.z);
+    //   if(max_z1 < max_z2) return -1;
+    //   if(max_z1 > max_z2) return 1;
+    //   return 0;
+    // });
 
     this.triangles.forEach(triangle => {
       triangle.draw(context);
     });
 
-    // this.springs.forEach(spring => {
-    //   spring.draw(context, this.color, this.string_width);
-    // });
+    this.springs.forEach(spring => {
+      spring.draw(context, this.color, this.string_width);
+    });
 
     // this.selected_joints.forEach(joint => {
     //   joint.draw(context, "red");
@@ -167,13 +167,37 @@ export default class Cloth {
   }
 
   tear(point, influence2):void {
+    let joints_to_remove = [];
     this.joints.forEach(joint => {
       let dist2 = point.sub(joint.pos.toVec2()).len2;
       if (dist2 <= influence2) {
+        joints_to_remove.push(joint);
         joint.springs.forEach(spring => {
+          let other = spring.e1;
+          if (other == joint) {
+            other = spring.e2;
+          }
+          let idx = other.springs.indexOf(spring);
+          // console.log(idx);
+          other.springs.splice(idx, 1);
           spring.active = false;
+          idx = this.springs.indexOf(spring);
+          // console.log(idx);
+          this.springs.splice(idx, 1);
         });
       }
+    });
+    let triangles_to_remove = [];
+    joints_to_remove.forEach(joint => {
+      this.joints.splice(this.joints.indexOf(joint), 1);
+      this.triangles.forEach(triangle => {
+        if (triangle.p1 == joint || triangle.p2 == joint || triangle.p3 == joint) {
+          triangles_to_remove.push(triangle);
+        }
+      });
+    });
+    triangles_to_remove.forEach(triangle => {
+      this.triangles.splice(this.triangles.indexOf(triangle), 1);
     });
   }
 
