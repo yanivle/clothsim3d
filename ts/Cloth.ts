@@ -1,7 +1,7 @@
 import Sphere from './Sphere.js'
 import Particle from './Particle.js'
 import Triangle from './Triangle.js'
-import {light_source} from './Triangle.js'
+import Renderer from './Renderer.js'
 import Spring from './Spring.js'
 import UIValue from './UIValue.js'
 import Vec3 from './Vec3.js'
@@ -24,7 +24,7 @@ export default class Cloth {
   mouse: Mouse;
   elapsed_time: number;
   string_width: number;
-  // selected_joints: Particle[];
+  renderer: Renderer = new Renderer();
 
   constructor(name:string, offset:Vec3, width:number, height:number, color:string, mouse:Mouse, lock_side:string, string_width:number=1) {
     this.name = name;
@@ -141,7 +141,7 @@ export default class Cloth {
     // });
 
     this.triangles.forEach(triangle => {
-      triangle.draw(context);
+      this.renderer.draw(triangle, context);
     });
 
     // this.springs.forEach(spring => {

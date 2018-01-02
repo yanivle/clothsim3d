@@ -1,14 +1,15 @@
 import Sphere from './Sphere.js';
 import Particle from './Particle.js';
 import Triangle from './Triangle.js';
+import Renderer from './Renderer.js';
 import Spring from './Spring.js';
 import UIValue from './UIValue.js';
 import Vec3 from './Vec3.js';
 import FixedForce from './FixedForce.js';
 const sphere = new Sphere(new Vec3(0, 0, 1), 50);
 export default class Cloth {
-    // selected_joints: Particle[];
     constructor(name, offset, width, height, color, mouse, lock_side, string_width = 1) {
+        this.renderer = new Renderer();
         this.name = name;
         this.offset = offset;
         this.color = color;
@@ -107,7 +108,7 @@ export default class Cloth {
         //   return 0;
         // });
         this.triangles.forEach(triangle => {
-            triangle.draw(context);
+            this.renderer.draw(triangle, context);
         });
         // this.springs.forEach(spring => {
         //   spring.draw(context, this.color, this.string_width);
