@@ -144,9 +144,9 @@ export default class Cloth {
       triangle.draw(context);
     });
 
-    this.springs.forEach(spring => {
-      spring.draw(context, this.color, this.string_width);
-    });
+    // this.springs.forEach(spring => {
+    //   spring.draw(context, this.color, this.string_width);
+    // });
 
     // this.selected_joints.forEach(joint => {
     //   joint.draw(context, "red");
