@@ -98,6 +98,10 @@ export default class Cloth {
     }
     draw(context) {
         sphere.draw(context);
+        let w = context.canvas.width;
+        let h = context.canvas.height;
+        this.renderer.light_source.x = w / 2 + Math.cos(this.elapsed_time / 5) * 200;
+        this.renderer.light_source.y = h / 2 + Math.sin(this.elapsed_time / 5) * 200;
         // this.wind.draw(context, 'yellow', this.offset.add(new Vec3(500, 0)));
         // this.gravity.draw(context, 'orange', this.offset.add(new Vec3(500, 0)));
         // this.triangles.sort((t1, t2) => {
@@ -110,6 +114,8 @@ export default class Cloth {
         this.triangles.forEach(triangle => {
             this.renderer.draw(triangle, context);
         });
+        context.fillStyle = 'red';
+        context.fillRect(this.renderer.light_source.x - 1, this.renderer.light_source.y - 1, 10, 10);
         // this.springs.forEach(spring => {
         //   spring.draw(context, this.color, this.string_width);
         // });
@@ -192,8 +198,8 @@ export default class Cloth {
     }
     accumulate_forces(delta_time) {
         this.elapsed_time += delta_time;
-        this.wind.dir.x = Math.sin(this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 40, 0, 500, 1);
-        this.wind.dir.z = Math.sin(2 * this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 40, 0, 500, 1) * 0.1;
+        this.wind.dir.x = Math.sin(this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 0, 0, 160, 40);
+        this.wind.dir.z = Math.sin(2 * this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 0, 0, 160, 40) * 0.1;
         this.gravity.dir.y = UIValue("gravity", 20, -40, 100, 1);
         this.joints.forEach(joint => {
             joint.force.izero();
