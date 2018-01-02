@@ -38,7 +38,9 @@ export default class Sphere {
         }
     }
     draw(context) {
-        context.fillStyle = 'green';
-        context.fillRect(this.center.x - this.radius / 2, this.center.y - this.radius / 2, this.radius, this.radius);
+        context.strokeStyle = 'green';
+        context.beginPath();
+        context.arc(this.center.x, this.center.y, this.radius, 0, 2 * Math.PI);
+        context.stroke();
     }
 }

@@ -14,14 +14,14 @@ export default class Cloth {
         this.color = color;
         this.mouse = mouse;
         this.string_width = string_width;
-        // this.selected_joints = [];
-        mouse.onmouseup_callsbacks.push(() => {
-            this.tear(mouse.pos, 10 * 10);
-            // this.selected_joints = [];
+        mouse.onmousedown_callsbacks.push(() => {
+            this.tear(mouse.pos, 200);
         });
-        // mouse.onmousedown_callsbacks.push(() => {
-        //   this.select(mouse.pos.toVec3(), 50);
-        // });
+        mouse.onmousemove_callsbacks.push(() => {
+            if (mouse.down) {
+                this.tear(mouse.pos, 200);
+            }
+        });
         this.elapsed_time = 0;
         this.init(width, height, lock_side);
     }
@@ -30,7 +30,7 @@ export default class Cloth {
         const GRID_WIDTH = width;
         // const GRID_HEIGHT = UIValue("GRID_HEIGHT", 15, 10, 50, 1);
         const GRID_HEIGHT = height;
-        const STRING_LEN = UIValue("STRING_LEN", 25, 1, 50, 1);
+        const STRING_LEN = 25; //UIValue("STRING_LEN", 25, 1, 50, 1);
         this.wind = new FixedForce(new Vec3());
         this.gravity = new FixedForce(new Vec3(0, UIValue("gravity", 20, -40, 100, 1)));
         let springs = this.springs = [];
@@ -96,7 +96,7 @@ export default class Cloth {
         return closest_joint;
     }
     draw(context) {
-        // sphere.draw(context);
+        sphere.draw(context);
         // this.wind.draw(context, 'yellow', this.offset.add(new Vec3(500, 0)));
         // this.gravity.draw(context, 'orange', this.offset.add(new Vec3(500, 0)));
         // this.triangles.sort((t1, t2) => {
@@ -139,11 +139,9 @@ export default class Cloth {
                         other = spring.e2;
                     }
                     let idx = other.springs.indexOf(spring);
-                    // console.log(idx);
                     other.springs.splice(idx, 1);
                     spring.active = false;
                     idx = this.springs.indexOf(spring);
-                    // console.log(idx);
                     this.springs.splice(idx, 1);
                 });
             }
@@ -171,8 +169,8 @@ export default class Cloth {
     // }
     //
     satisfy_constraints() {
-        const constraint_iterations = UIValue("constraint_iterations", 3, 1, 10, 1);
-        for (let i = 0; i < constraint_iterations; i++) {
+        // const constraint_iterations = UIValue("constraint_iterations", 3, 1, 10, 1);
+        for (let i = 0; i < 3; i++) {
             this.springs.forEach(spring => {
                 spring.satisfy();
             });

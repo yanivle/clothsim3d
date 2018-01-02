@@ -7,6 +7,7 @@ export default class Mouse {
         this.register_handlers();
         this.onmouseup_callsbacks = [];
         this.onmousedown_callsbacks = [];
+        this.onmousemove_callsbacks = [];
     }
     get direction() {
         return this.pos.sub(this.prev_pos);
@@ -37,6 +38,9 @@ export default class Mouse {
             var rect = mouse.canvas.getBoundingClientRect();
             mouse.pos.x = e.clientX - rect.left;
             mouse.pos.y = e.clientY - rect.top;
+            mouse.onmousemove_callsbacks.forEach(callback => {
+                callback();
+            });
             e.preventDefault();
         };
     }

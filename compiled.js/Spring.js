@@ -1,4 +1,3 @@
-import UIValue from './UIValue.js';
 export default class Spring {
     constructor(e1, e2) {
         this.e1 = e1;
@@ -31,7 +30,8 @@ export default class Spring {
         if (dist < this.resting_len) {
             return;
         }
-        if (dist > this.resting_len * UIValue('max_stretch', 10, 1, 100, 0.1)) {
+        // if (dist > this.resting_len * UIValue('max_stretch', 10, 1, 100, 0.1)) {
+        if (dist > this.resting_len * 10) {
             this.active = false;
             return;
         }

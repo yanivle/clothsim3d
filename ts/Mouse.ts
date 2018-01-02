@@ -8,6 +8,7 @@ export default class Mouse {
   canvas: HTMLCanvasElement;
   onmouseup_callsbacks:any[];
   onmousedown_callsbacks:any[];
+  onmousemove_callsbacks:any[];
 
   constructor(canvas) {
     this.canvas = canvas;
@@ -16,6 +17,7 @@ export default class Mouse {
     this.register_handlers();
     this.onmouseup_callsbacks = [];
     this.onmousedown_callsbacks = [];
+    this.onmousemove_callsbacks = [];
   }
 
   get direction():Vec2 {
@@ -50,6 +52,9 @@ export default class Mouse {
         var rect = mouse.canvas.getBoundingClientRect();
         mouse.pos.x = e.clientX - rect.left;
         mouse.pos.y = e.clientY - rect.top;
+        mouse.onmousemove_callsbacks.forEach(callback => {
+          callback();
+        });
         e.preventDefault();
     };
   }
