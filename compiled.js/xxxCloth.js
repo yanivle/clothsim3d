@@ -32,8 +32,8 @@ export default class Cloth {
         // const GRID_HEIGHT = UIValue("GRID_HEIGHT", 15, 10, 50, 1);
         const GRID_HEIGHT = height;
         const STRING_LEN = 25; //UIValue("STRING_LEN", 25, 1, 50, 1);
-        this.wind = new FixedForce();
-        this.gravity = new FixedForce(0, UIValue("gravity", 20, -40, 100, 1), 0);
+        this.wind = new FixedForce(new Vec3());
+        this.gravity = new FixedForce(new Vec3(0, UIValue("gravity", 20, -40, 100, 1)));
         let springs = this.springs = [];
         let joints = this.joints = [];
         let triangles = this.triangles = [];
@@ -111,14 +111,14 @@ export default class Cloth {
         //   if(max_z1 > max_z2) return 1;
         //   return 0;
         // });
-        this.springs.forEach(spring => {
-            spring.draw(context, '#888', this.string_width);
-        });
         this.triangles.forEach(triangle => {
             this.renderer.draw(triangle, context);
         });
         context.fillStyle = 'red';
         context.fillRect(this.renderer.light_source.x - 1, this.renderer.light_source.y - 1, 10, 10);
+        // this.springs.forEach(spring => {
+        //   spring.draw(context, this.color, this.string_width);
+        // });
         // this.selected_joints.forEach(joint => {
         //   joint.draw(context, "red");
         // });
@@ -153,12 +153,12 @@ export default class Cloth {
                 });
             }
         });
-        let triangles_to_remove = new Set();
+        let triangles_to_remove = [];
         joints_to_remove.forEach(joint => {
             this.joints.splice(this.joints.indexOf(joint), 1);
             this.triangles.forEach(triangle => {
                 if (triangle.p1 == joint || triangle.p2 == joint || triangle.p3 == joint) {
-                    triangles_to_remove.add(triangle);
+                    triangles_to_remove.push(triangle);
                 }
             });
         });
@@ -166,6 +166,15 @@ export default class Cloth {
             this.triangles.splice(this.triangles.indexOf(triangle), 1);
         });
     }
+    // select(point, influence2):void {
+    //   this.joints.forEach(joint => {
+    //     let dist2 = point.sub(joint.pos).len2;
+    //     if (dist2 <= influence2) {
+    //       this.selected_joints.push(joint);
+    //     }
+    //   });
+    // }
+    //
     satisfy_constraints() {
         // const constraint_iterations = UIValue("constraint_iterations", 3, 1, 10, 1);
         for (let i = 0; i < 3; i++) {
@@ -189,9 +198,9 @@ export default class Cloth {
     }
     accumulate_forces(delta_time) {
         this.elapsed_time += delta_time;
-        this.wind.x = Math.sin(this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 0, 0, 160, 40);
-        this.wind.z = Math.sin(2 * this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 0, 0, 160, 40) * 0.1;
-        this.gravity.y = UIValue("gravity", 20, -40, 100, 1);
+        this.wind.dir.x = Math.sin(this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 0, 0, 160, 40);
+        this.wind.dir.z = Math.sin(2 * this.elapsed_time * UIValue("wind_freq", 0.3, 0.1, 10, 0.1)) * UIValue("wind_mag", 0, 0, 160, 40) * 0.1;
+        this.gravity.dir.y = UIValue("gravity", 20, -40, 100, 1);
         this.joints.forEach(joint => {
             joint.force.izero();
             this.gravity.apply(joint);

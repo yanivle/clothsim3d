@@ -27,8 +27,7 @@ export default class Particle {
         let t = this.pos.copy();
         let a = this.force.mul(delta_time * delta_time);
         let v = this.vel;
-        // v.imul(UIValue('damp', 0.999, 0.990, 1, 0.001));
-        v.imul(0.999);
+        v.imul(UIValue('damp', 0.999, 0.990, 1, 0.001));
         this.pos.iadd(v.add(a));
         this.prev_pos = t;
     }

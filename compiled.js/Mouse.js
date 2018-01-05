@@ -2,6 +2,9 @@ import Vec2 from './Vec2.js';
 export default class Mouse {
     constructor(canvas) {
         this.canvas = canvas;
+        this.reset();
+    }
+    reset() {
         this.pos = new Vec2();
         this.prev_pos = new Vec2();
         this.register_handlers();
