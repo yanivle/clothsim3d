@@ -12,8 +12,12 @@ export default class Spring {
             return;
         }
         context.beginPath();
-        context.moveTo(this.e1.pos.x, this.e1.pos.y);
-        context.lineTo(this.e2.pos.x, this.e2.pos.y);
+        // let e1 = PerspectiveProjection(this.e1.pos);
+        // let e2 = PerspectiveProjection(this.e2.pos);
+        let e1 = this.e1.pos;
+        let e2 = this.e2.pos;
+        context.moveTo(e1.x, e1.y);
+        context.lineTo(e2.x, e2.y);
         // let c = Math.abs(this.e1.pos.z - this.e2.pos.z) * 100;
         // if (c > 255) c = 255;
         // context.strokeStyle = 'rgb(255,255,' + c + ')';

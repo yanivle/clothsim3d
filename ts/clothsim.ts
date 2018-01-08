@@ -114,7 +114,7 @@ let updateInterval = 1 / 180;
 //   prev_times.push(0);
 // }
 let prev_times_pos = 0;
-const MAX_SIMULATIONS_PER_FRAME = 90;
+const MAX_SIMULATIONS_PER_FRAME = 30;
 function update(delta_time) {
   const speed = UIValue('speed', 10, 1, 200, 1);
   delta_time *= speed;

@@ -7,7 +7,7 @@ export default class Color {
     static RandomColor() {
         return new Color(Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255));
     }
-    multiply(mul, min_mul = 50 / 255) {
+    multiply(mul, min_mul = 50 / 255, transparent = false) {
         if (mul < min_mul) {
             mul = min_mul;
         }
@@ -20,9 +20,17 @@ export default class Color {
             g = 255;
         if (b > 255)
             b = 255;
-        return '#' + ('0' + r.toString(16)).substr(-2) +
-            ('0' + g.toString(16)).substr(-2) +
-            ('0' + b.toString(16)).substr(-2);
+        if (!transparent) {
+            return '#' + ('0' + r.toString(16)).substr(-2) +
+                ('0' + g.toString(16)).substr(-2) +
+                ('0' + b.toString(16)).substr(-2);
+        }
+        else {
+            return 'rgba(' + r.toString() +
+                ',' + g.toString() +
+                ',' + b.toString() +
+                ',0.9)';
+        }
     }
     toString() {
         return '#' + ('0' + this.r.toString(16)).substr(-2) +

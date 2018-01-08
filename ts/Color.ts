@@ -15,7 +15,7 @@ export default class Color {
                      Math.floor(Math.random() * 255));
   }
 
-  multiply(mul:number, min_mul:number=50/255) {
+  multiply(mul:number, min_mul:number=50/255,transparent=false) {
     if (mul < min_mul) {
       mul = min_mul;
     }
@@ -25,9 +25,16 @@ export default class Color {
     if (r > 255) r = 255;
     if (g > 255) g = 255;
     if (b > 255) b = 255;
-    return '#' + ('0' + r.toString(16)).substr(-2) +
-                 ('0' + g.toString(16)).substr(-2) +
-                 ('0' + b.toString(16)).substr(-2);
+    if (!transparent) {
+      return '#' + ('0' + r.toString(16)).substr(-2) +
+                   ('0' + g.toString(16)).substr(-2) +
+                   ('0' + b.toString(16)).substr(-2);
+    } else {
+      return 'rgba(' + r.toString() +
+                   ',' + g.toString() +
+                   ',' + b.toString() +
+                   ',0.9)';
+    }
   }
 
   toString() {
