@@ -12,6 +12,21 @@ export default class Triangle {
         }
     }
     get center() {
-        return this.p1.pos.add(this.p2.pos).add(this.p3.pos).mul(1 / 3);
+        return (this.p1.add(this.p2).add(this.p3)).mul(1 / 3);
+    }
+    translate(offset) {
+        this.p1.iadd(offset);
+        this.p2.iadd(offset);
+        this.p3.iadd(offset);
+    }
+    scale(factor) {
+        this.p1.imul(factor);
+        this.p2.imul(factor);
+        this.p3.imul(factor);
+    }
+    toString() {
+        return 'Triangle(' + this.p1.toString() + ',\n' +
+            this.p2.toString() + ',\n' +
+            this.p3.toString() + ')\n';
     }
 }

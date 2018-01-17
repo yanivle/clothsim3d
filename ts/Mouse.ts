@@ -16,8 +16,8 @@ export default class Mouse {
   }
 
   reset() {
-    this.pos = new Vec2();
-    this.prev_pos = new Vec2();
+    this.pos = new Vec2(1000, 1000);
+    this.prev_pos = new Vec2(1000, 1000);
     this.register_handlers();
     this.onmouseup_callsbacks = [];
     this.onmousedown_callsbacks = [];

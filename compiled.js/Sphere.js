@@ -17,8 +17,8 @@ export default class Sphere {
     get radius() {
         return this._radius;
     }
-    collideWithParticle(particle) {
-        let vec_from_center = particle.pos.sub(this.center);
+    collideWithPoint(point) {
+        let vec_from_center = point.sub(this.center);
         let dist2 = vec_from_center.len2;
         if (dist2 < this._radius2) {
             if (vec_from_center.z > 0) {
@@ -31,9 +31,9 @@ export default class Sphere {
         return new CollisionResult(false);
     }
     constrain(particle) {
-        let collision_res = this.collideWithParticle(particle);
+        let collision_res = this.collideWithPoint(particle.pos);
         if (collision_res.collided) {
-            particle.pos = collision_res.collision_point;
+            particle.pos.icopy(collision_res.collision_point);
             particle.dampen(0.9999);
         }
     }

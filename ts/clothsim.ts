@@ -122,7 +122,7 @@ function update(delta_time) {
   let simulations = 0;
   while (updateCounter >= updateInterval) {
     if (simulations == MAX_SIMULATIONS_PER_FRAME) {
-      console.log('Too much time to simulate, skipping:', updateCounter);
+      // console.log('Too much time to simulate, skipping:', updateCounter);
       updateCounter = 0;
       break;
     }

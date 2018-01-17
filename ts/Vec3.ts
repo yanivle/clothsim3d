@@ -15,6 +15,12 @@ export default class Vec3 {
     return <Vec2><any>this;
   }
 
+  icopy(other:Vec3) {
+    this.x = other.x;
+    this.y = other.y;
+    this.z = other.z;
+  }
+
   copy() {
     return new Vec3(this.x, this.y, this.z);
   }
@@ -102,7 +108,34 @@ export default class Vec3 {
                     this.x * other.y - this.y * other.x);
   }
 
+  compare(other) {
+    if (this.x < other.x) {
+      return -1;
+    } else if (this.x > other.x) {
+      return 1;
+    }
+    if (this.y < other.y) {
+      return -1;
+    } else if (this.y > other.y) {
+      return 1;
+    }
+    if (this.z < other.z) {
+      return -1;
+    } else if (this.z > other.z) {
+      return 1;
+    }
+    return 0;
+  }
+
   normalize() {
     this.idiv(this.len);
+  }
+
+  mid_point(other) {
+    return this.add(other).mul(0.5);
+  }
+
+  toString() {
+    return '(' + this.x + ',' + this.y + ',' + this.z + ')';
   }
 }

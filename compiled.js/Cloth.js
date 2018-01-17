@@ -6,7 +6,10 @@ import Spring from './Spring.js';
 import UIValue from './UIValue.js';
 import Vec3 from './Vec3.js';
 import FixedForce from './FixedForce.js';
+import Mesh from './Mesh.js';
 const sphere = new Sphere(new Vec3(0, 0, 1), 50);
+const sphere_mesh = Mesh.BuildSphere();
+sphere_mesh.scale(100);
 export default class Cloth {
     constructor(name, offset, width, height, color, mouse, lock_side, string_width = 1) {
         this.renderer = new Renderer();
@@ -63,8 +66,8 @@ export default class Cloth {
                 }
                 if (x > 0 && y > 0) {
                     connect_to.push(joints[x - 1 + (y - 1) * GRID_WIDTH]);
-                    let t = new Triangle(joint, joints[x + (y - 1) * GRID_WIDTH], joints[x - 1 + (y - 1) * GRID_WIDTH]);
-                    let t2 = new Triangle(joint, joints[x - 1 + (y - 1) * GRID_WIDTH], joints[x - 1 + y * GRID_WIDTH]);
+                    let t = new Triangle(joint.pos, joints[x + (y - 1) * GRID_WIDTH].pos, joints[x - 1 + (y - 1) * GRID_WIDTH].pos);
+                    let t2 = new Triangle(joint.pos, joints[x - 1 + (y - 1) * GRID_WIDTH].pos, joints[x - 1 + y * GRID_WIDTH].pos);
                     triangles.push(t);
                     triangles.push(t2);
                 }
@@ -97,7 +100,9 @@ export default class Cloth {
         return closest_joint;
     }
     draw(context) {
-        sphere.draw(context);
+        // sphere.draw(context);
+        sphere_mesh.render(this.renderer, context);
+        // sphere_mesh.color.r = (1 + Math.cos(this.elapsed_time / 2)) * 255 / 4 + 128;
         let w = context.canvas.width;
         let h = context.canvas.height;
         this.renderer.light_source.x = w / 2 + Math.cos(this.elapsed_time / 5) * 200;
@@ -155,9 +160,10 @@ export default class Cloth {
         });
         let triangles_to_remove = new Set();
         joints_to_remove.forEach(joint => {
+            let pos = joint.pos;
             this.joints.splice(this.joints.indexOf(joint), 1);
             this.triangles.forEach(triangle => {
-                if (triangle.p1 == joint || triangle.p2 == joint || triangle.p3 == joint) {
+                if (triangle.p1 == pos || triangle.p2 == pos || triangle.p3 == pos) {
                     triangles_to_remove.add(triangle);
                 }
             });
@@ -168,7 +174,7 @@ export default class Cloth {
     }
     satisfy_constraints() {
         // const constraint_iterations = UIValue("constraint_iterations", 3, 1, 10, 1);
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 1; i++) {
             this.springs.forEach(spring => {
                 spring.satisfy();
             });
@@ -205,6 +211,9 @@ export default class Cloth {
         sphere.center.y = this.mouse.pos.y;
         sphere.center.z = UIValue("sphere_z", 20, 0, 50, 0.5);
         sphere.radius = UIValue("sphere_radius", 100, 1, 500, 1);
+        let mesh_center = sphere.center.copy();
+        mesh_center.z = UIValue("mesh_z", -600, -1000, 1000, 10);
+        sphere_mesh.recenter(mesh_center);
         // light_source.x = this.mouse.pos.x;
         // light_source.y = this.mouse.pos.y;
         this.accumulate_forces(delta_time);
