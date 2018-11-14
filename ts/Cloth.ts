@@ -10,6 +10,7 @@ import Rect from './Rect.js'
 import Mouse from './Mouse.js'
 import AirResistance from './AirResistance.js'
 import Mesh from './Mesh.js'
+import {WHITE, RED, BLUE, BLACK} from './Color.js'
 
 const sphere = new Sphere(new Vec3(0, 0, 1), 50);
 const sphere_mesh = Mesh.BuildSphere();
@@ -97,6 +98,13 @@ export default class Cloth {
                                 joints[x - 1 + y * GRID_WIDTH].pos);
           triangles.push(t);
           triangles.push(t2);
+          // if (x % 3 == 1) {
+          //   t.color = t2.color = RED;
+          // } else if (x % 3 == 2) {
+          //   t.color = t2.color = BLUE;
+          // } else {
+          //   t.color = t2.color = WHITE;
+          // }
         }
         if (x < GRID_WIDTH - 1 && y > 0) {
           connect_to.push(joints[x + 1 + (y - 1) * GRID_WIDTH]);

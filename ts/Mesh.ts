@@ -1,7 +1,8 @@
 import Triangle from './Triangle.js'
 import Vec3 from './Vec3.js'
 import Renderer from './Renderer.js'
-import {WHITE, RED, BLUE, BLACK, Color} from './Color.js';
+import {WHITE, RED, BLUE, BLACK} from './Color.js'
+import Color from './Color.js'
 
 export default class Mesh {
     color: Color = RED;
@@ -239,7 +240,7 @@ export default class Mesh {
       this.normalize_all_vertices();
     }
 
-    static BuildSphere(iterations:number=3):Mesh {
+    static BuildSphere(iterations:number=2):Mesh {
       // let mesh = Mesh.BuildPyramid();
       // let mesh = Mesh.BuildCube();
       let mesh = Mesh.BuildIcosahedron();

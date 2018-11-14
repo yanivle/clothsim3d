@@ -56,9 +56,9 @@ export default class Renderer {
     // context.lineTo(p3.x|0, p3.y|0);
     context.fill();
     if (normal_light) {
-      context.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-      context.lineWidth = 1;
-      context.stroke();
+      // context.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+      // context.lineWidth = 1;
+      // context.stroke();
     }
   }
 }
